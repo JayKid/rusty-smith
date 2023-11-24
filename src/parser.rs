@@ -3,7 +3,7 @@ use std::{
     fs::{self, DirEntry},
 };
 
-use markdown::{mdast::Node, Constructs, ParseOptions};
+use markdown::{mdast::Node, CompileOptions, Constructs, Options, ParseOptions};
 
 #[derive(Debug, Clone)]
 pub struct FrontmatterData {
@@ -24,7 +24,16 @@ pub struct Post {
 const POSTS_FILE_PATH: &str = "/path/to/your/posts";
 
 fn parse_html(post_markdown: &String) -> String {
-    let html = markdown::to_html(post_markdown);
+    let parse_options = Options {
+        compile: CompileOptions {
+            allow_dangerous_html: true, // I need it for my mixed Markdown + HTML post style
+            ..CompileOptions::default()
+        },
+        parse: ParseOptions {
+            ..ParseOptions::default()
+        },
+    };
+    let html = markdown::to_html_with_options(post_markdown, &parse_options).unwrap();
     return html;
 }
 
@@ -38,7 +47,7 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
             if let Some(title_value) = title_src {
                 parsed_title = title_value;
             } else {
-                return Err("There was an error parsing the post title".to_owned())
+                return Err("There was an error parsing the post title".to_owned());
             }
 
             let date_src = parsed_ast.get("date");
@@ -46,7 +55,7 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
             if let Some(date_value) = date_src {
                 parsed_date = date_value;
             } else {
-                return Err("There was an error parsing the post date".to_owned())
+                return Err("There was an error parsing the post date".to_owned());
             }
 
             let parsed_keywords = parsed_ast.get("keywords");
