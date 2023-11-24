@@ -32,22 +32,23 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
     match frontmatter_data {
         Node::Yaml(value) => {
             let parsed_ast: BTreeMap<String, String> = serde_yaml::from_str(&value.value).unwrap();
+
             let title_src = parsed_ast.get("title");
             let parsed_title;
-            match title_src {
-                Some(title) => {
-                    parsed_title = title;
-                }
-                None => return Err("There was an error parsing the post title".to_owned()),
+            if let Some(title_value) = title_src {
+                parsed_title = title_value;
+            } else {
+                return Err("There was an error parsing the post title".to_owned())
             }
+
             let date_src = parsed_ast.get("date");
             let parsed_date;
-            match date_src {
-                Some(date) => {
-                    parsed_date = date;
-                }
-                None => return Err("There was an error parsing the post date".to_owned()),
+            if let Some(date_value) = date_src {
+                parsed_date = date_value;
+            } else {
+                return Err("There was an error parsing the post date".to_owned())
             }
+
             let parsed_keywords = parsed_ast.get("keywords");
             let parsed_description = parsed_ast.get("description");
 
