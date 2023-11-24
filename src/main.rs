@@ -1,9 +1,9 @@
 mod parser;
+mod builder;
+use builder::build;
 use parser::get_posts;
 
 fn main() {
     let posts = get_posts();
-    for post in posts {
-        println!("{:?}\n", post);
-    }
+    build(&posts);
 }

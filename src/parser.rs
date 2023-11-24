@@ -5,7 +5,7 @@ use std::{
 
 use markdown::{mdast::Node, Constructs, ParseOptions};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FrontmatterData {
     pub title: String,
     pub description: Option<String>,
@@ -13,7 +13,7 @@ pub struct FrontmatterData {
     pub date: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Post {
     pub full_path: String,
     pub file_name: String,
