@@ -25,11 +25,16 @@ const POSTS_FILE_PATH: &str = "/path/to/your/posts";
 
 fn parse_html(post_markdown: &String) -> String {
     let parse_options = Options {
+        
         compile: CompileOptions {
             allow_dangerous_html: true, // I need it for my mixed Markdown + HTML post style
             ..CompileOptions::default()
         },
         parse: ParseOptions {
+            constructs: Constructs {
+                frontmatter: true,
+                ..Constructs::default()
+            },
             ..ParseOptions::default()
         },
     };
@@ -82,7 +87,7 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
         ..ParseOptions::default()
     };
 
-    let full_path = post_path
+    let full_path = &post_path
         .path()
         .to_str()
         .unwrap_or("file_path error")
@@ -92,7 +97,7 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
         .to_str()
         .unwrap_or("file_name error")
         .to_owned();
-    let post_markdown = fs::read_to_string(full_path.clone()).expect("should have read the file");
+    let post_markdown = fs::read_to_string(String::from(full_path)).expect("should have read the file");
 
     let parsed_post_html = parse_html(&post_markdown);
 
@@ -120,7 +125,7 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
     }
 
     let new_post = Post {
-        full_path,
+        full_path: String::from(full_path),
         file_name,
         html: parsed_post_html,
         frontmatter: parsed_post_frontmatter,
