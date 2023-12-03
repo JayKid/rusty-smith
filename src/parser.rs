@@ -5,7 +5,7 @@ use std::{
 
 use markdown::{mdast::Node, CompileOptions, Constructs, Options, ParseOptions};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct FrontmatterData {
     pub title: String,
     pub description: Option<String>,
@@ -13,7 +13,7 @@ pub struct FrontmatterData {
     pub date: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Post {
     pub full_path: String,
     pub file_name: String,
@@ -25,7 +25,6 @@ const POSTS_FILE_PATH: &str = "/path/to/your/posts";
 
 fn parse_html(post_markdown: &String) -> String {
     let parse_options = Options {
-        
         compile: CompileOptions {
             allow_dangerous_html: true, // I need it for my mixed Markdown + HTML post style
             ..CompileOptions::default()
@@ -97,7 +96,8 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
         .to_str()
         .unwrap_or("file_name error")
         .to_owned();
-    let post_markdown = fs::read_to_string(String::from(full_path)).expect("should have read the file");
+    let post_markdown =
+        fs::read_to_string(String::from(full_path)).expect("should have read the file");
 
     let parsed_post_html = parse_html(&post_markdown);
 

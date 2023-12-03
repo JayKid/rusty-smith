@@ -1,5 +1,5 @@
-mod parser;
 mod builder;
+mod parser;
 use builder::build;
 use parser::get_posts;
 
