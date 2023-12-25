@@ -21,7 +21,7 @@ pub struct Post {
     pub frontmatter: FrontmatterData,
 }
 
-const POSTS_FILE_PATH: &str = "/path/to/your/posts";
+const POSTS_FILE_PATH: &str = "/home/jay/code/rusty-smith/src/posts";
 
 fn parse_html(post_markdown: &String) -> String {
     let parse_options = Options {

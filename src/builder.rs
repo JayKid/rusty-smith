@@ -1,3 +1,5 @@
+mod homepage;
+
 use crate::parser;
 use std::{
     env,
@@ -38,11 +40,15 @@ fn get_post_full_path(post: &parser::Post) -> String {
     return full_dir_path;
 }
 
-fn create_file(post: &parser::Post) -> () {
+fn create_post_file(post: &parser::Post) -> () {
     let full_path = get_post_full_path(&post);
     let file_path = format!("{}/index.html", full_path);
+    create_file(&post.html, &file_path)
+}
+
+fn create_file(contents: &str, file_path: &str) -> () {
     let mut file = File::create(file_path).unwrap();
-    match write!(file, "{}", post.html) {
+    match write!(file, "{}", contents) {
         Ok(_) => {
             // println!("created file succesfully");
         }
@@ -52,7 +58,7 @@ fn create_file(post: &parser::Post) -> () {
     }
 }
 
-fn create_post_file(post: &parser::Post) -> () {
+fn create_post_dir_and_file(post: &parser::Post) -> () {
     let full_dir_path = get_post_full_path(&post);
 
     match fs::create_dir(full_dir_path) {
@@ -64,13 +70,13 @@ fn create_post_file(post: &parser::Post) -> () {
         }
     }
 
-    create_file(post);
+    create_post_file(post);
 }
 
 fn add_public_assets_to_build() -> () {
     // TO-DO: Consider using copy_dir crate or similar to avoid this
     let styles_source_path = format!("{}/{}", get_build_dir(), "../public/css/styles.css");
-    let styles_final_dir_path = format!("{}/{}", get_build_dir(), "/public/css");
+    let styles_final_dir_path = format!("{}/{}", get_build_dir(), "css");
     let styles_final_file_path = format!("{}/styles.css", &styles_final_dir_path);
 
     fs::create_dir_all(&styles_final_dir_path).expect("failed to create assets dir");
@@ -83,8 +89,10 @@ pub fn build(posts: &Vec<parser::Post>) -> () {
     create_build_dir();
 
     for post in posts {
-        create_post_file(&post);
+        create_post_dir_and_file(&post);
     }
+
+    homepage::create_homepage(&posts);
 
     add_public_assets_to_build();
 }
