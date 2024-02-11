@@ -48,14 +48,8 @@ fn get_posts_markup(posts: &Vec<parser::Post>) -> String {
 
         let item_markup = &item_template
             .replace(POST_ITEM_LINK_PLACEHOLDER, &post_link)
-            .replace(
-                POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER,
-                post_date,
-            )
-            .replace(
-                POST_ITEM_DATE_READABLE_PLACEHOLDER,
-                post_date,
-            )
+            .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, post_date)
+            .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, post_date)
             .replace(POST_ITEM_TITLE_PLACEHOLDER, &post.frontmatter.title)
             .replace(POST_ITEM_EXCERPT_PLACEHOLDER, post_description);
         markup += item_markup;
