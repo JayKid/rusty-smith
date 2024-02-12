@@ -1,12 +1,10 @@
 use std::fs;
 
-use crate::builder::get_build_dir;
+use crate::builder::{create_file, get_build_dir};
 use crate::parser;
 
-use super::create_file;
-
-// Const (Move to .env)
-const HOST: &str = "localhost:8000";
+// TO-DO: Const (Move to .env)
+const HOST: &str = "http://localhost:8000";
 
 // Template filepaths
 const HOMEPAGE_TEMPLATE_FILE_PATH: &str = "./assets/templates/homepage.html";
@@ -38,7 +36,7 @@ fn get_posts_markup(posts: &Vec<parser::Post>) -> String {
     let mut markup: String = "".to_owned();
 
     for post in posts {
-        let post_link = &format!("{}/{}/", HOST, post.full_path);
+        let post_link = &format!("{}/{}/", HOST, post.permalink);
         let post_date = &post.frontmatter.date;
 
         let mut post_description = "";

@@ -7,21 +7,27 @@ use markdown::{mdast::Node, CompileOptions, Constructs, Options, ParseOptions};
 
 #[derive(Debug)]
 pub struct FrontmatterData {
-    pub title: String,
+    pub date: String,
     pub description: Option<String>,
     pub keywords: Option<String>,
-    pub date: String,
+    pub title: String,
 }
 
 #[derive(Debug)]
 pub struct Post {
-    pub full_path: String,
     pub file_name: String,
-    pub html: String,
     pub frontmatter: FrontmatterData,
+    pub full_path: String,
+    pub html: String,
+    pub permalink: String,
 }
 
 const POSTS_FILE_PATH: &str = "/home/jay/code/rusty-smith/posts";
+
+fn get_permalink_from_title(post_title: &String) -> String {
+    let lowercase = post_title.to_lowercase();
+    return str::replace(&lowercase, " ", "-");
+}
 
 fn parse_html(post_markdown: &String) -> String {
     let parse_options = Options {
@@ -123,12 +129,14 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
             ))
         }
     }
+    let permalink = get_permalink_from_title(&parsed_post_frontmatter.title);
 
     let new_post = Post {
-        full_path: String::from(full_path),
         file_name,
-        html: parsed_post_html,
         frontmatter: parsed_post_frontmatter,
+        full_path: String::from(full_path),
+        html: parsed_post_html,
+        permalink: permalink,
     };
     return Ok(new_post);
 }
