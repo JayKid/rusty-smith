@@ -3,6 +3,12 @@ An attempt to replicate [Metalsmith's JS library](https://metalsmith.io/) in Rus
 
 ## Requirements
 
+### Repository setup
+
+Duplicate the `.env-example` file at the root into a new `.env` file and edit the values of each variable contained in it accordingly
+
+### Library usage
+
 At this point, you're going to have to annotate your posts with frontmatter data in order for the library to have the necessary information about each post.
 
 Your post header should look like this:
