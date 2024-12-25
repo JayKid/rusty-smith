@@ -1,5 +1,6 @@
 mod homepage;
 mod post;
+mod feed;
 
 use crate::parser;
 use std::{
@@ -61,6 +62,7 @@ pub fn build(posts: &Vec<parser::Post>) -> () {
     }
 
     homepage::create_homepage(&posts);
+    feed::create_feed(&posts);
 
     add_public_assets_to_build();
 }
