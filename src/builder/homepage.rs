@@ -1,10 +1,8 @@
 use std::fs;
+use dotenv;
 
 use crate::builder::{create_file, get_build_dir};
 use crate::parser;
-
-// TO-DO: Const (Move to .env)
-const HOST: &str = "http://localhost:8000";
 
 // Template filepaths
 const HOMEPAGE_TEMPLATE_FILE_PATH: &str = "./assets/templates/homepage.html";
@@ -34,9 +32,10 @@ pub fn create_homepage(posts: &Vec<parser::Post>) -> () {
 fn get_posts_markup(posts: &Vec<parser::Post>) -> String {
     let item_template = fs::read_to_string(HOMEPAGE_POST_PARTIAL_FILE_PATH).unwrap();
     let mut markup: String = "".to_owned();
+    let host: String = dotenv::var("HOST").expect("HOST environment variable must be set");
 
     for post in posts {
-        let post_link = &format!("{}/{}/", HOST, post.permalink);
+        let post_link = &format!("{}/{}/", host, post.permalink);
         let post_date = &post.frontmatter.date;
 
         let mut post_description = "";
@@ -56,8 +55,9 @@ fn get_posts_markup(posts: &Vec<parser::Post>) -> String {
 }
 
 fn get_home_template() -> String {
+    let host: String = dotenv::var("HOST").expect("HOST environment variable must be set");
     let mut template_contents = fs::read_to_string(HOMEPAGE_TEMPLATE_FILE_PATH).unwrap();
-    template_contents = template_contents.replace(&HOST_PLACEHOLDER, &HOST);
+    template_contents = template_contents.replace(&HOST_PLACEHOLDER, &host);
     return template_contents;
 }
 
