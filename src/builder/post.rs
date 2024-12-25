@@ -9,6 +9,8 @@ const POST_TEMPLATE_FILE_PATH: &str = "./assets/templates/post.html";
 
 // Templates placeholders
 const HOST_PLACEHOLDER: &str = "{host}";
+const WEBSITE_NAME: &str = "{website_name}";
+const AUTHOR_NAME: &str = "{author_name}";
 const POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER: &str = "{post_date_timestamp}";
 const POST_ITEM_DATE_READABLE_PLACEHOLDER: &str = "{post_date_human_readable}";
 const POST_ITEM_TITLE_PLACEHOLDER: &str = "{post_title}";
@@ -20,6 +22,8 @@ const POST_ITEM_IMAGE_URL_PLACEHOLDER: &str = "{post_image_url}";
 
 fn wrap_post_with_layout(post: &parser::Post) -> String {
     let host: String = dotenv::var("HOST").expect("HOST environment variable must be set");
+    let website_name: String = dotenv::var("WEBSITE_NAME").expect("WEBSITE_NAME environment variable must be set");
+    let author_name: String = dotenv::var("AUTHOR_NAME").expect("AUTHOR_NAME environment variable must be set");
     let image = &format!("{}/img/logo.png", host); // TO-DO: Implement support for image in frontmatter parser
     let post_link = &format!("{}/{}/", host, post.full_path);
     let mut post_description = "";
@@ -36,6 +40,8 @@ fn wrap_post_with_layout(post: &parser::Post) -> String {
 
     let post_markup = post_template
         .replace(HOST_PLACEHOLDER, &host)
+        .replace(WEBSITE_NAME, &website_name)
+        .replace(AUTHOR_NAME, &author_name)
         .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, &post.frontmatter.date)
         .replace(
             POST_ITEM_DATE_READABLE_PLACEHOLDER,
