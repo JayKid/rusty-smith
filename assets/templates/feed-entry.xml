@@ -1,0 +1,7 @@
+<entry>
+    <title>{title_placeholder}</title>
+    <link href="{link_placeholder}"/>
+    <id>{id_placeholder}</id>
+    <updated>{updated_placeholder}</updated>
+    <summary>{summary_placeholder}</summary>
+</entry>

@@ -38,6 +38,8 @@ In order to be able to replace the custom Metalsmith setup I used for Jay.cat, I
 |----- homepage.html (The main template for the homepage of the site built)
 |----- archive-item.html (The partial for each item rendered in the homepage)
 |----- post.html (The template for each post page)
+|----- feed.xml (The template for the Atom RSS feed)
+|----- feed-entry.xml (The partial for each item in the Atom RSS feed)
 |- public
 |--- css
 |----- styles.css (The main stylesheet containing ALL styles)
