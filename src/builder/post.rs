@@ -1,4 +1,5 @@
 use std::fs;
+use dotenv;
 
 use crate::builder::{create_file, get_build_dir};
 use crate::parser;
@@ -18,8 +19,7 @@ const POST_ITEM_KEYWORDS_PLACEHOLDER: &str = "{post_keywords}";
 const POST_ITEM_IMAGE_URL_PLACEHOLDER: &str = "{post_image_url}";
 
 fn wrap_post_with_layout(post: &parser::Post) -> String {
-    // TO-DO: Const (Move to .env)
-    let host = "http://localhost:8000";
+    let host: String = dotenv::var("HOST").expect("HOST environment variable must be set");
     let image = &format!("{}/img/logo.png", host); // TO-DO: Implement support for image in frontmatter parser
     let post_link = &format!("{}/{}/", host, post.full_path);
     let mut post_description = "";
@@ -35,7 +35,7 @@ fn wrap_post_with_layout(post: &parser::Post) -> String {
     let post_template = fs::read_to_string(POST_TEMPLATE_FILE_PATH).unwrap();
 
     let post_markup = post_template
-        .replace(HOST_PLACEHOLDER, host)
+        .replace(HOST_PLACEHOLDER, &host)
         .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, &post.frontmatter.date)
         .replace(
             POST_ITEM_DATE_READABLE_PLACEHOLDER,
