@@ -15,6 +15,7 @@ const HOST_PLACEHOLDER: &str = "{host}";
 const WEBSITE_NAME: &str = "{website_name}";
 const WEBSITE_LOGO_URL: &str = "{website_logo_url}";
 const WEBSITE_DESCRIPTION: &str = "{website_description}";
+const AUTHOR_NAME: &str = "{author_name}";
 
 // Homepage Item partial
 const POST_ITEM_LINK_PLACEHOLDER: &str = "{post_link}";
@@ -62,12 +63,14 @@ fn get_home_template() -> String {
     let website_name: String = dotenv::var("WEBSITE_NAME").expect("WEBSITE_NAME environment variable must be set");
     let website_logo_url: String = dotenv::var("WEBSITE_LOGO_URL").expect("WEBSITE_LOGO_URL environment variable must be set");
     let website_description: String = dotenv::var("WEBSITE_DESCRIPTION").expect("WEBSITE_DESCRIPTION environment variable must be set");
+    let author_name: String = dotenv::var("AUTHOR_NAME").expect("AUTHOR_NAME environment variable must be set");
     let mut template_contents = fs::read_to_string(HOMEPAGE_TEMPLATE_FILE_PATH).unwrap();
     template_contents = template_contents
         .replace(&HOST_PLACEHOLDER, &host)
         .replace(&WEBSITE_NAME, &website_name)
         .replace(&WEBSITE_LOGO_URL, &website_logo_url)
-        .replace(&WEBSITE_DESCRIPTION, &website_description);
+        .replace(&WEBSITE_DESCRIPTION, &website_description)
+    .replace(&AUTHOR_NAME, &author_name);
     return template_contents;
 }
 
