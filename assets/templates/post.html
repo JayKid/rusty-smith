@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{post_title} | {website_name}</title>
+    <meta name="description" content="{post_description}">
+    <meta name="keywords" content="{post_keywords}">
+    <meta name="author" content="{author_name}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{post_title}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{post_url}" />
+    <meta property="og:image" content="{post_image_url}" />
+    <meta property="og:description" content="{post_description}" /> 
+</head>
+
+<body>
+    <h1>{post_title}</h1>
+    <time datetime="{post_date_timestamp}" itemprop="datePublished">{post_date_human_readable}</time>
+    {post_content}
+</body>
+
+</html>

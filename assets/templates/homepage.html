@@ -2,17 +2,24 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Your site</title>
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{website_name}</title>
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{website_name}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{host}" />
+    <meta property="og:image" content="{website_logo_url}" />
+    <meta property="og:description" content="{website_description}" />
 </head>
 
 <body>
-  <h1>Page Title</h1>
-  <ul class="archive-list">
-    {post_items}
-  </ul>
+    <h1>{website_name}</h1>
+    <ul class="archive-list">
+        {post_items}
+    </ul>
 </body>
 
 </html>
