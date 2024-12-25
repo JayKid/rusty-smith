@@ -2,12 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title>{website_name}</title>
-  <link href="{host}"/>
+  <link href="{host}/"/>
   <updated>{last_updated_feed_time}</updated>
   <author>
     <name>{author_name}</name>
   </author>
-  <id>{host}</id>
+  <id>{host}/</id>
 
   {entries}
 
