@@ -50,23 +50,15 @@ fn parse_html(post_markdown: &String) -> String {
 fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, String> {
     match frontmatter_data {
         Node::Yaml(value) => {
-            let parsed_ast: BTreeMap<String, String> = serde_yaml::from_str(&value.value).unwrap();
+            let parsed_ast: BTreeMap<String, String> = serde_yaml::from_str(&value.value)
+                .map_err(|e| format!("YAML parsing error: {}", e))?;
 
             let title_src = parsed_ast.get("title");
-            let parsed_title;
-            if let Some(title_value) = title_src {
-                parsed_title = title_value;
-            } else {
-                return Err("There was an error parsing the post title".to_owned());
-            }
+            let parsed_title =
+                title_src.ok_or_else(|| "Missing required field: title".to_string())?;
 
             let date_src = parsed_ast.get("date");
-            let parsed_date;
-            if let Some(date_value) = date_src {
-                parsed_date = date_value;
-            } else {
-                return Err("There was an error parsing the post date".to_owned());
-            }
+            let parsed_date = date_src.ok_or_else(|| "Missing required field: date".to_string())?;
 
             let parsed_keywords = parsed_ast.get("keywords");
             let parsed_description = parsed_ast.get("description");
@@ -107,33 +99,22 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
 
     let parsed_post_html = parse_html(&post_markdown);
 
-    let parsed_ast_from_post = markdown::to_mdast(&post_markdown, &parse_options).unwrap();
+    let parsed_ast_from_post = markdown::to_mdast(&post_markdown, &parse_options)
+        .map_err(|err| format!("Failed to parse markdown: {}", err))?;
     let frontmatter_data = parsed_ast_from_post
         .children()
-        .unwrap()
+        .ok_or_else(|| "No children found in markdown".to_string())?
         .clone()
         .into_iter()
         .nth(0)
-        .unwrap();
+        .ok_or_else(|| "No frontmatter found".to_string())?;
 
-    let post_frontmatter = parse_frontmatter_data(frontmatter_data);
-    let parsed_post_frontmatter;
-    match post_frontmatter {
-        Ok(parsed_frontmatter_data) => {
-            parsed_post_frontmatter = parsed_frontmatter_data;
-        }
-        Err(error_message) => {
-            return Err(format!(
-                "there was an error parsing frontmatter data {}",
-                error_message
-            ))
-        }
-    }
-    let permalink = get_permalink_from_title(&parsed_post_frontmatter.title);
+    let post_frontmatter = parse_frontmatter_data(frontmatter_data)?;
+    let permalink = get_permalink_from_title(&post_frontmatter.title);
 
     let new_post = Post {
         file_name,
-        frontmatter: parsed_post_frontmatter,
+        frontmatter: post_frontmatter,
         full_path: String::from(full_path),
         html: parsed_post_html,
         permalink: permalink,
@@ -167,4 +148,129 @@ pub fn get_posts() -> Vec<Post> {
     }
 
     return parsed_posts;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+    use std::io::Write;
+    use tempfile::TempDir;
+
+    // Helper function to create a temporary markdown file
+    fn create_test_markdown_file(temp_dir: &TempDir, content: &str) -> DirEntry {
+        let file_path = temp_dir.path().join("test-post.md");
+        let mut file = File::create(&file_path).unwrap();
+        write!(file, "{}", content).unwrap();
+        fs::read_dir(temp_dir.path())
+            .unwrap()
+            .next()
+            .unwrap()
+            .unwrap()
+    }
+
+    #[test]
+    fn test_get_permalink_from_title() {
+        assert_eq!(
+            get_permalink_from_title(&String::from("Hello World")),
+            "hello-world"
+        );
+        assert_eq!(
+            get_permalink_from_title(&String::from("Test Title 123")),
+            "test-title-123"
+        );
+        assert_eq!(
+            get_permalink_from_title(&String::from("UPPER CASE")),
+            "upper-case"
+        );
+    }
+
+    #[test]
+    fn test_parse_html() {
+        let markdown = String::from("# Test\n\nThis is a **test**.");
+        let html = parse_html(&markdown);
+        assert!(html.contains("<h1>"));
+        assert!(html.contains("Test"));
+        assert!(html.contains("<strong>test</strong>"));
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Test Post
+date: 2024-01-01
+description: Test description
+keywords: test,keywords"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.title, "Test Post");
+        assert_eq!(result.date, "2024-01-01");
+        assert_eq!(result.description, Some("Test description".to_string()));
+        assert_eq!(result.keywords, Some("test,keywords".to_string()));
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_missing_required_fields() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from("description: Test description"),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_parse_post() {
+        let temp_dir = TempDir::new().unwrap();
+        let content = r#"---
+title: Test Post
+date: 2024-01-01
+description: Test description
+keywords: test,keywords
+---
+
+# Test Content
+
+This is test content."#;
+
+        let dir_entry = create_test_markdown_file(&temp_dir, content);
+        let result = parse_post(dir_entry).unwrap();
+
+        assert_eq!(result.frontmatter.title, "Test Post");
+        assert_eq!(result.frontmatter.date, "2024-01-01");
+        assert_eq!(result.permalink, "test-post");
+        assert!(result.html.contains("<h1>Test Content</h1>"));
+    }
+
+    #[test]
+    fn test_parse_post_invalid_frontmatter() {
+        let temp_dir = TempDir::new().unwrap();
+        // Make sure we have proper YAML delimiters and structure, but with invalid content
+        let content = r#"---
+title: Test Post
+date: 2024-01-01
+description: Test description
+keywords: [test,keywords]
+---
+
+# Test Content"#;
+
+        let dir_entry = create_test_markdown_file(&temp_dir, content);
+        let result = parse_post(dir_entry);
+        assert!(result.is_err());
+        if let Err(err) = result {
+            // The error should come from trying to parse the invalid YAML structure
+            assert!(err.contains("YAML parsing error"));
+        }
+    }
+
+    // Note: We're not testing get_posts() directly because it depends on the actual filesystem
+    // and the POSTS_FILE_PATH constant. In a real application, you might want to make the
+    // posts directory path configurable for testing purposes.
 }
