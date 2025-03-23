@@ -1,9 +1,9 @@
 mod builder;
 mod parser;
-use builder::build;
-use parser::get_posts;
+mod plugin;
+mod plugins;
 
-fn main() {
-    let posts = get_posts();
-    build(&posts);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    builder::build()?;
+    Ok(())
 }

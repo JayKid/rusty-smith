@@ -1,25 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{website_name}</title>
-    <link rel="stylesheet" href="css/styles.css">
-    
+    <meta name="description" content="{website_name}">
+    <meta name="author" content="{author_name}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{website_name}">
+    <meta name="twitter:description" content="{website_description}">
+    <meta name="twitter:creator" content="@J2TheKay">
+    <meta name="twitter:image" content="https://jay.cat/img/logo.png">
+
     <!-- Open Graph data -->
     <meta property="og:title" content="{website_name}" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{host}" />
     <meta property="og:image" content="{website_logo_url}" />
     <meta property="og:description" content="{website_description}" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" href="/css/styles.css?v=1.0">
+    <link rel="alternate" type="application/rss+xml" title="{website_name} Atom feed" href="/feed.xml"/>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h1>{website_name}</h1>
-    <ul class="archive-list">
-        {post_items}
-    </ul>
+    <div class="page archive">
+        <header>
+            <nav class="navigation">
+                <div class="links">
+                    <h1>{website_name}</h1><span class="divider" aria-hidden="true">/</span><a
+                        class="about-me" href="{host}/about-me">About me</a>
+                </div>
+                <div class="search-box-container">
+                    <svg class="search-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        width="48" height="48">
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                    <form id="nav-search-form" method="get" action="/search">
+                        <label for="search" class="sr-only">Search</label>
+                        <input name="query" id="search" class="search-bar" type="search" />
+                    </form>
+                </div>
+            </nav>
+        </header>
+        <ul class="archive-list">
+            {post_items}
+        </ul>
+    </div>
 </body>
 
 </html>
