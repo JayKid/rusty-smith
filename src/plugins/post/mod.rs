@@ -20,6 +20,7 @@ const POST_ITEM_CONTENT_PLACEHOLDER: &str = "{post_content}";
 const POST_ITEM_URL_PLACEHOLDER: &str = "{post_url}";
 const POST_ITEM_KEYWORDS_PLACEHOLDER: &str = "{post_keywords}";
 const POST_ITEM_IMAGE_URL_PLACEHOLDER: &str = "{post_image_url}";
+const THEME_CLASS_PLACEHOLDER: &str = "{theme_class}";
 
 pub struct PostPlugin;
 
@@ -65,7 +66,8 @@ impl Plugin for PostPlugin {
                 .replace(POST_ITEM_CONTENT_PLACEHOLDER, &post.html)
                 .replace(POST_ITEM_URL_PLACEHOLDER, &post.permalink)
                 .replace(POST_ITEM_KEYWORDS_PLACEHOLDER, &post.frontmatter.keywords.as_deref().unwrap_or(""))
-                .replace(POST_ITEM_IMAGE_URL_PLACEHOLDER, &format!("{}/img/logo.png", host));
+                .replace(POST_ITEM_IMAGE_URL_PLACEHOLDER, &format!("{}/img/logo.png", host))
+                .replace(THEME_CLASS_PLACEHOLDER, post.frontmatter.theme_class());
 
             write!(file, "{}", post_html)?;
         }

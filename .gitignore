@@ -16,6 +16,9 @@ Cargo.lock
 # Ignore posts md files
 posts
 
+# Ignore pages (use pages.example as reference)
+pages
+
 # Ignore build directory
 build
 

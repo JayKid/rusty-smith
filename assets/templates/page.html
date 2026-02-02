@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{page_title} | {website_name}</title>
+    <meta name="description" content="{page_description}">
+    <meta name="author" content="{author_name}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{page_title} | {website_name}">
+    <meta name="twitter:description" content="{page_description}">
+    <meta name="twitter:image" content="{website_logo_url}">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{page_title} | {website_name}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{page_url}" />
+    <meta property="og:image" content="{website_logo_url}" />
+    <meta property="og:description" content="{page_description}" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" href="/css/styles.css?v=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page {page_slug}">
+        <header>
+            <nav class="navigation">
+                <a class="backHome" href="{host}">{website_name}</a>
+            </nav>
+        </header>
+        <main>
+            {page_content}
+        </main>
+    </div>
+</body>
+</html>

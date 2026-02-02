@@ -10,7 +10,26 @@ pub struct FrontmatterData {
     pub date: String,
     pub description: Option<String>,
     pub keywords: Option<String>,
+    pub light_theme: bool,
+    pub permalink: Option<String>,
+    pub publish: Option<String>,
     pub title: String,
+}
+
+impl FrontmatterData {
+    /// Returns true if the post is a draft (publish == "draft")
+    pub fn is_draft(&self) -> bool {
+        self.publish.as_deref() == Some("draft")
+    }
+
+    /// Returns the CSS class for the theme ("light-theme" or "")
+    pub fn theme_class(&self) -> &str {
+        if self.light_theme {
+            "light-theme"
+        } else {
+            ""
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -62,11 +81,20 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
 
             let parsed_keywords = parsed_ast.get("keywords");
             let parsed_description = parsed_ast.get("description");
+            let parsed_publish = parsed_ast.get("publish");
+            let parsed_permalink = parsed_ast.get("permalink");
+            let parsed_light_theme = parsed_ast
+                .get("lightTheme")
+                .map(|v| v == "true")
+                .unwrap_or(false);
 
             Ok(FrontmatterData {
                 title: parsed_title.to_string(),
                 description: parsed_description.cloned(),
                 keywords: parsed_keywords.cloned(),
+                light_theme: parsed_light_theme,
+                permalink: parsed_permalink.cloned(),
+                publish: parsed_publish.cloned(),
                 date: parsed_date.to_string(),
             })
         }
@@ -110,14 +138,19 @@ fn parse_post(post_path: DirEntry) -> Result<Post, String> {
         .ok_or_else(|| "No frontmatter found".to_string())?;
 
     let post_frontmatter = parse_frontmatter_data(frontmatter_data)?;
-    let permalink = get_permalink_from_title(&post_frontmatter.title);
+
+    // Use custom permalink from frontmatter if provided, otherwise generate from title
+    let permalink = post_frontmatter
+        .permalink
+        .clone()
+        .unwrap_or_else(|| get_permalink_from_title(&post_frontmatter.title));
 
     let new_post = Post {
         file_name,
         frontmatter: post_frontmatter,
         full_path: String::from(full_path),
         html: parsed_post_html,
-        permalink: permalink,
+        permalink,
     };
     return Ok(new_post);
 }
@@ -212,6 +245,78 @@ keywords: test,keywords"#,
         assert_eq!(result.date, "2024-01-01");
         assert_eq!(result.description, Some("Test description".to_string()));
         assert_eq!(result.keywords, Some("test,keywords".to_string()));
+        assert_eq!(result.publish, None);
+        assert!(!result.is_draft());
+        assert!(!result.light_theme);
+        assert_eq!(result.theme_class(), "");
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_light_theme() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Light Theme Post
+date: 2024-01-01
+lightTheme: true"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert!(result.light_theme);
+        assert_eq!(result.theme_class(), "light-theme");
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_draft() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Draft Post
+date: 2024-01-01
+publish: draft"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.title, "Draft Post");
+        assert_eq!(result.publish, Some("draft".to_string()));
+        assert!(result.is_draft());
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_published() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Published Post
+date: 2024-01-01
+publish: published"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.publish, Some("published".to_string()));
+        assert!(!result.is_draft());
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_custom_permalink() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: My Post Title
+date: 2024-01-01
+permalink: custom-url-slug"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.permalink, Some("custom-url-slug".to_string()));
     }
 
     #[test]
@@ -246,6 +351,24 @@ This is test content."#;
         assert_eq!(result.frontmatter.date, "2024-01-01");
         assert_eq!(result.permalink, "test-post");
         assert!(result.html.contains("<h1>Test Content</h1>"));
+    }
+
+    #[test]
+    fn test_parse_post_with_custom_permalink() {
+        let temp_dir = TempDir::new().unwrap();
+        let content = r#"---
+title: Test Post With Long Title
+date: 2024-01-01
+permalink: custom-short-url
+---
+
+# Test Content"#;
+
+        let dir_entry = create_test_markdown_file(&temp_dir, content);
+        let result = parse_post(dir_entry).unwrap();
+
+        // Should use custom permalink instead of generating from title
+        assert_eq!(result.permalink, "custom-short-url");
     }
 
     #[test]

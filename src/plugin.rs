@@ -1,10 +1,20 @@
 use std::collections::HashMap;
 use crate::parser::Post;
 
+/// Represents a static page (like about, contact, etc.)
+#[derive(Debug)]
+pub struct Page {
+    pub title: String,
+    pub description: Option<String>,
+    pub slug: String,
+    pub html: String,
+}
+
 /// Represents the site's metadata and content during the build process
 #[derive(Debug)]
 pub struct Site {
     pub posts: Vec<Post>,
+    pub pages: Vec<Page>,
     pub metadata: HashMap<String, String>,
 }
 
@@ -12,6 +22,7 @@ impl Site {
     pub fn new() -> Self {
         Site {
             posts: Vec::new(),
+            pages: Vec::new(),
             metadata: HashMap::new(),
         }
     }
