@@ -10,6 +10,7 @@ pub struct FrontmatterData {
     pub date: String,
     pub description: Option<String>,
     pub keywords: Option<String>,
+    pub light_theme: bool,
     pub publish: Option<String>,
     pub title: String,
 }
@@ -18,6 +19,15 @@ impl FrontmatterData {
     /// Returns true if the post is a draft (publish == "draft")
     pub fn is_draft(&self) -> bool {
         self.publish.as_deref() == Some("draft")
+    }
+
+    /// Returns the CSS class for the theme ("light-theme" or "")
+    pub fn theme_class(&self) -> &str {
+        if self.light_theme {
+            "light-theme"
+        } else {
+            ""
+        }
     }
 }
 
@@ -71,11 +81,16 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
             let parsed_keywords = parsed_ast.get("keywords");
             let parsed_description = parsed_ast.get("description");
             let parsed_publish = parsed_ast.get("publish");
+            let parsed_light_theme = parsed_ast
+                .get("lightTheme")
+                .map(|v| v == "true")
+                .unwrap_or(false);
 
             Ok(FrontmatterData {
                 title: parsed_title.to_string(),
                 description: parsed_description.cloned(),
                 keywords: parsed_keywords.cloned(),
+                light_theme: parsed_light_theme,
                 publish: parsed_publish.cloned(),
                 date: parsed_date.to_string(),
             })
@@ -224,6 +239,25 @@ keywords: test,keywords"#,
         assert_eq!(result.keywords, Some("test,keywords".to_string()));
         assert_eq!(result.publish, None);
         assert!(!result.is_draft());
+        assert!(!result.light_theme);
+        assert_eq!(result.theme_class(), "");
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_light_theme() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Light Theme Post
+date: 2024-01-01
+lightTheme: true"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert!(result.light_theme);
+        assert_eq!(result.theme_class(), "light-theme");
     }
 
     #[test]
