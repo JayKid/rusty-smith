@@ -10,6 +10,7 @@ pub fn build() -> Result<(), Box<dyn std::error::Error>> {
     pipeline.add_plugin(PostsPlugin::new());
     pipeline.add_plugin(PostPlugin::new());
     pipeline.add_plugin(HomepagePlugin::new());
+    pipeline.add_plugin(PagesPlugin::new());
     pipeline.add_plugin(FeedPlugin::new());
     pipeline.add_plugin(SitemapPlugin::new());
 
