@@ -10,7 +10,15 @@ pub struct FrontmatterData {
     pub date: String,
     pub description: Option<String>,
     pub keywords: Option<String>,
+    pub publish: Option<String>,
     pub title: String,
+}
+
+impl FrontmatterData {
+    /// Returns true if the post is a draft (publish == "draft")
+    pub fn is_draft(&self) -> bool {
+        self.publish.as_deref() == Some("draft")
+    }
 }
 
 #[derive(Debug)]
@@ -62,11 +70,13 @@ fn parse_frontmatter_data(frontmatter_data: Node) -> Result<FrontmatterData, Str
 
             let parsed_keywords = parsed_ast.get("keywords");
             let parsed_description = parsed_ast.get("description");
+            let parsed_publish = parsed_ast.get("publish");
 
             Ok(FrontmatterData {
                 title: parsed_title.to_string(),
                 description: parsed_description.cloned(),
                 keywords: parsed_keywords.cloned(),
+                publish: parsed_publish.cloned(),
                 date: parsed_date.to_string(),
             })
         }
@@ -212,6 +222,43 @@ keywords: test,keywords"#,
         assert_eq!(result.date, "2024-01-01");
         assert_eq!(result.description, Some("Test description".to_string()));
         assert_eq!(result.keywords, Some("test,keywords".to_string()));
+        assert_eq!(result.publish, None);
+        assert!(!result.is_draft());
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_draft() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Draft Post
+date: 2024-01-01
+publish: draft"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.title, "Draft Post");
+        assert_eq!(result.publish, Some("draft".to_string()));
+        assert!(result.is_draft());
+    }
+
+    #[test]
+    fn test_parse_frontmatter_data_with_published() {
+        let yaml = Node::Yaml(markdown::mdast::Yaml {
+            value: String::from(
+                r#"title: Published Post
+date: 2024-01-01
+publish: published"#,
+            ),
+            position: None,
+        });
+
+        let result = parse_frontmatter_data(yaml).unwrap();
+
+        assert_eq!(result.publish, Some("published".to_string()));
+        assert!(!result.is_draft());
     }
 
     #[test]
