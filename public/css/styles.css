@@ -1,1 +1,514 @@
-/* Your CSS here */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* General styles */
+
+:root {
+    --primary-color: #ff6699;
+}
+  
+body {
+    background-color: black;
+    font-size: 1.2rem;
+    font-family: 'Source Sans Pro', sans-serif;
+    line-height: 1.3;
+    color: #ddd;
+}
+
+body.light-theme {
+    background-color: white;
+}
+
+section {
+    margin-bottom: 2.5rem;
+}
+
+p {
+    margin: 0 0 1rem 0;
+}
+
+em {
+    margin-right: 0.2rem;
+}
+
+a {
+    color: var(--primary-color);
+}
+
+ul {
+    margin-bottom: 1.5rem;
+}
+
+ul > ul {
+    margin-left: 2rem;
+    margin-bottom: 0;
+}
+
+li {
+    list-style: square;
+    margin-bottom: 0.5rem;
+    margin-left: 2rem;
+}
+
+img {
+    max-width: 100%;
+    margin-bottom: 1rem;
+}
+
+time {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 2rem;
+}
+
+summary {
+    margin-bottom: 1rem;
+}
+
+h1 {
+    line-height: 1;
+    font-size: 2.5rem;
+    margin-bottom: 0.5;
+    font-weight: 900;
+}
+
+.page:not(.archive) h2 {
+    border-top: 1px solid var(--primary-color);;
+    padding-top: 2rem;
+}
+
+h2 {
+    font-size: 2.25rem;
+    font-weight: 400;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+h2,
+h3,
+h4 {
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    color: white;
+}
+
+.light-theme h1,
+.light-theme h2,
+.light-theme h3,
+.light-theme h4 {
+    color: black;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5rem;
+    align-items: flex-end;
+}
+
+.page {
+    padding: 2rem 1rem 2rem 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    color: rgb(205, 203, 203);
+}
+
+.light-theme .page {
+    color: #626262;
+}
+
+/* Code styles */
+
+details {
+    margin: 1.5rem 1rem;
+}
+
+blockquote div {
+    border-radius: 4px;
+    margin-left: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    background: #cccccc1a;
+    font-style: italic;
+    padding: 1rem;
+}
+
+pre {
+    margin-bottom: 1rem;
+    overflow: auto;
+}
+
+code {
+    background-color: var(--primary-color);
+    color: black;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+}
+
+.code-block {
+    padding: 1rem;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+    margin-bottom: 1rem;
+}
+
+.code-block pre {
+    margin-bottom: 0;
+
+}
+
+.code-block code {
+    padding: 0;
+}
+
+kbd {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    color: var(--primary-color);
+    padding: 2px 4px;
+    background-color: black;
+    border-radius: 4px;
+}
+
+@media(min-width: 700px) {
+    body {
+        font-size: 1.2rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    .page {
+        padding: 2rem 1rem 2rem 1rem;
+    }
+
+    .backHome {
+        font-size: 3rem;
+        margin-bottom: 6rem;
+    }
+}
+
+/* Navigation */
+
+a.backHome {
+    color: white;
+    font-size: 3rem;
+    font-family: Source Sans Pro;
+    font-weight: 900;
+}
+
+.light-theme a.backHome {
+    color: black;
+}
+
+.links {
+    flex: 2;
+}
+
+.navigation {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.navigation h1 {
+    display: inline;
+}
+
+.navigation .divider {
+    color: var(--primary-color);
+    font-size: 2.6rem;
+    font-weight: 400;
+    margin: auto 0.6rem auto 0.9rem;
+}
+
+.navigation a:not(.backHome) {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.light-theme .navigation a:not(.backHome) {
+    color: black;
+}
+
+
+.navigation a {
+    text-decoration: none;
+}
+
+.search-bar {
+    background: black;
+    border-width: 0;
+    outline: none;
+    color: white;
+    font-size: 1.2rem;
+    font-family: 'Source Sans Pro';
+    min-width: 35%;
+    min-height: 2rem;
+    margin-top: 1rem;
+    padding-left: 1rem;
+}
+
+.light-theme .search-bar {
+    background: none;
+    color: black;
+}
+
+
+@media(min-width: 700px) {
+    .navigation {
+        flex-direction: row;
+    }
+}
+
+/* Archive */
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.title-container h2 {
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: none;
+    color: white;
+}
+
+.title-container time {
+    margin-bottom: 0;
+}
+
+.archive-post-item {
+    text-decoration: none;
+}
+
+.page.archive {
+    max-width: 960px;
+}
+
+.page.archive a:not(.about-me) {
+    color: rgb(205, 203, 203);
+}
+
+.archive-post-title {
+    flex: 1;
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: none;
+    margin-top: 0;
+}
+
+.post-excerpt {
+    flex: 1;
+    padding-top: 0.5rem;
+}
+
+.date-container>time {
+    margin-bottom: 0.5rem;
+}
+
+.archive-list {
+    list-style: none;
+}
+
+.archive-list-item {
+    list-style: none;
+    margin-left: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.archive-list-item>time {
+    margin-bottom: 1rem;
+}
+
+.archive-list-item:not(:last-child) {
+    border-bottom: 1px solid var(--primary-color);
+}
+
+@media(min-width: 700px) {
+    .content-container {
+        flex-direction: row;
+    }
+
+    .post-excerpt {
+        padding-left: 4rem;
+    }
+}
+
+/* About me */
+
+.about-me h1 {
+    margin-bottom: 2rem;
+}
+
+.about-me .backHome {
+    text-decoration: underline;
+}
+
+/* Search page */
+
+.search-page h1 {
+    margin-bottom: 2rem;
+}
+
+.search-page .navigation {
+    display: flex;
+    flex-direction: column;
+}
+
+#nav-search-form {
+    flex: 1;
+}
+
+#search {
+    width: 100%;
+    border: rgba(0,0,0,0);
+}
+
+#search:focus {
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    box-shadow: 0px 0px 8px var(--primary-color);
+    transition: ease-in-out 0.2s;
+}
+
+.search-box-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    border: 0;
+    border-color: #ddd;
+    border-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 0.5rem;
+    width: 100%;
+}
+
+.search-icon {
+    fill: #9f9f9f;
+    height: 2rem;
+    margin-left: -10px;
+    flex-grow: 0;
+}
+
+table {
+    border: 1px solid #707070;
+    border-radius: 5px;
+    color: #DDD;
+
+    width: 640px;
+    border-spacing: 0;
+    padding: 0 2rem;
+    margin: 3rem auto 2rem auto;
+}
+
+tr:not(:last-child) td {
+    border-bottom: 1px solid #808080;
+}
+
+td,
+th {
+    height: 1.5em;
+    transition: all 0.3s;
+    /* Simple transition for hover effect */
+    padding: 0.5em;
+}
+
+th {
+    font-weight: bold;
+    border-bottom: 3px solid #808080;
+    text-align: left;
+}
+
+tr {
+    border-bottom: 1px solid #808080;
+}
+
+/* Hiding class, making content visible only to screen readers but not visually */
+/* "sr" meaning "screen-reader" */
+
+.sr-only:not(:focus):not(:active) {
+    clip: rect(0 0 0 0); 
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap; 
+    width: 1px;
+  }
+
+/* 
+Responsive table styles from https://css-tricks.com/responsive-data-tables/
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+
+    /* Force table to not be like tables anymore */
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr {
+        width: auto;
+    }
+
+    td,
+    th {
+        border-bottom: 1px solid #808080;
+    }
+
+    td {
+        /* Behave  like a "row" */
+        border: none;
+        position: relative;
+    }
+
+    td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    tr:not(:last-child) td {
+        border: none;
+    }
+
+    tr:last-child {
+        border-bottom: none;
+    }
+}
