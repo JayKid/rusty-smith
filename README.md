@@ -1,6 +1,27 @@
 # rusty-smith
 An attempt to replicate [Metalsmith's JS library](https://metalsmith.io/) in Rust
 
+## Usage
+
+### Build the site
+
+```bash
+cargo run
+```
+
+This generates the static site in the `build/` directory.
+
+### Create a new post
+
+```bash
+cargo run -- new
+```
+
+This creates a new post file in `posts/` with today's date and a template structure:
+- Filename: `YYYY-MM-DD-post-title.md`
+- Pre-filled frontmatter with date, title, description, keywords
+- Basic section structure to get started
+
 ## Requirements
 
 ### Repository setup
@@ -13,19 +34,29 @@ At this point, you're going to have to annotate your posts with frontmatter data
 
 Your post header should look like this:
 
-```
+```yaml
 ---
 title: "How to add an application to the launcher in Manjaro"
 description: A quick post explaining how to add a custom app to the OS launcher in Manjaro
 keywords: linux manjaro os
-# layout: page.html
-# priority: 0.9
 date: 2023-11-09
-# publish: draft
+permalink: custom-url-slug  # optional, overrides auto-generated URL
+publish: draft              # optional, set to "draft" to exclude from build
+lightTheme: true            # optional, adds "light-theme" CSS class to body
 ---
 ```
 
-The lines that are commented are properties still not supported by the library. Coming soon!
+### Frontmatter fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `title` | Yes | Post title |
+| `date` | Yes | Publication date (YYYY-MM-DD) |
+| `description` | No | Short description for meta tags and archive |
+| `keywords` | No | Comma-separated keywords for meta tags |
+| `permalink` | No | Custom URL slug (defaults to lowercase title with spaces as dashes) |
+| `publish` | No | Set to `draft` to exclude from build |
+| `lightTheme` | No | Set to `true` to add `light-theme` CSS class |
 
 ## Expected file structure
 
