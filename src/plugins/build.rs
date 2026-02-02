@@ -28,14 +28,33 @@ impl BuildPlugin {
         Ok(())
     }
 
+    fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), Box<dyn std::error::Error>> {
+        if !dst.exists() {
+            fs::create_dir_all(dst)?;
+        }
+
+        for entry in fs::read_dir(src)? {
+            let entry = entry?;
+            let src_path = entry.path();
+            let dst_path = dst.join(entry.file_name());
+
+            if src_path.is_dir() {
+                Self::copy_dir_recursive(&src_path, &dst_path)?;
+            } else {
+                fs::copy(&src_path, &dst_path)?;
+            }
+        }
+
+        Ok(())
+    }
+
     fn copy_assets(&self) -> Result<(), Box<dyn std::error::Error>> {
         let build_dir = Self::get_build_dir();
-        let styles_source_path = format!("{}/{}", build_dir, "../public/css/styles.css");
-        let styles_final_dir_path = format!("{}/{}", build_dir, "css");
-        let styles_final_file_path = format!("{}/styles.css", &styles_final_dir_path);
+        let public_dir = Path::new("public");
+        let build_path = Path::new(&build_dir);
 
-        fs::create_dir_all(&styles_final_dir_path)?;
-        fs::copy(styles_source_path, styles_final_file_path)?;
+        Self::copy_dir_recursive(public_dir, build_path)?;
+
         Ok(())
     }
 }
