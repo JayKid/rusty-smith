@@ -54,17 +54,22 @@ impl Plugin for PostPlugin {
             fs::create_dir_all(&post_dir_path)?;
             let mut file = File::create(file_path)?;
 
+            // Format date for human readable display (YYYY/MM/DD)
+            let date_human_readable = post.frontmatter.date.replace('-', "/");
+            // Build full post URL
+            let post_url = format!("{}/{}/", host, post.permalink);
+
             // Replace placeholders in the template
             let post_html = post_template
                 .replace(HOST_PLACEHOLDER, &host)
                 .replace(WEBSITE_NAME, &website_name)
                 .replace(AUTHOR_NAME, &author_name)
                 .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, &post.frontmatter.date)
-                .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, &post.frontmatter.date)
+                .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, &date_human_readable)
                 .replace(POST_ITEM_TITLE_PLACEHOLDER, &post.frontmatter.title)
                 .replace(POST_ITEM_DESCRIPTION_PLACEHOLDER, &post.frontmatter.description.as_deref().unwrap_or(""))
                 .replace(POST_ITEM_CONTENT_PLACEHOLDER, &post.html)
-                .replace(POST_ITEM_URL_PLACEHOLDER, &post.permalink)
+                .replace(POST_ITEM_URL_PLACEHOLDER, &post_url)
                 .replace(POST_ITEM_KEYWORDS_PLACEHOLDER, &post.frontmatter.keywords.as_deref().unwrap_or(""))
                 .replace(POST_ITEM_IMAGE_URL_PLACEHOLDER, &format!("{}/img/logo.png", host))
                 .replace(THEME_CLASS_PLACEHOLDER, post.frontmatter.theme_class());

@@ -57,10 +57,13 @@ impl Plugin for HomepagePlugin {
 
         // Generate post items
         for post in &site.posts {
+            // Format date for human readable display (YYYY/MM/DD)
+            let date_human_readable = post.frontmatter.date.replace('-', "/");
+
             let post_item = post_item_template
                 .replace(POST_ITEM_LINK_PLACEHOLDER, &post.permalink)
                 .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, &post.frontmatter.date)
-                .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, &post.frontmatter.date)
+                .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, &date_human_readable)
                 .replace(POST_ITEM_TITLE_PLACEHOLDER, &post.frontmatter.title)
                 .replace(POST_ITEM_EXCERPT_PLACEHOLDER, &post.frontmatter.description.as_deref().unwrap_or(""));
             post_items.push_str(&post_item);
