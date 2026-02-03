@@ -43,9 +43,15 @@ pub struct Post {
 
 const POSTS_FILE_PATH: &str = "posts";
 
-fn get_permalink_from_title(post_title: &String) -> String {
-    let lowercase = post_title.to_lowercase();
-    return str::replace(&lowercase, " ", "-");
+fn get_permalink_from_title(post_title: &str) -> String {
+    post_title
+        .to_lowercase()
+        .replace(' ', "-")
+        .replace(',', "")
+        .replace('#', "")
+        .replace(':', "")
+        .replace('"', "")
+        .replace('\'', "")
 }
 
 fn parse_html(post_markdown: &String) -> String {
@@ -205,16 +211,29 @@ mod tests {
     #[test]
     fn test_get_permalink_from_title() {
         assert_eq!(
-            get_permalink_from_title(&String::from("Hello World")),
+            get_permalink_from_title("Hello World"),
             "hello-world"
         );
         assert_eq!(
-            get_permalink_from_title(&String::from("Test Title 123")),
+            get_permalink_from_title("Test Title 123"),
             "test-title-123"
         );
         assert_eq!(
-            get_permalink_from_title(&String::from("UPPER CASE")),
+            get_permalink_from_title("UPPER CASE"),
             "upper-case"
+        );
+        // Test special character handling
+        assert_eq!(
+            get_permalink_from_title("Containers, Drives and WoL"),
+            "containers-drives-and-wol"
+        );
+        assert_eq!(
+            get_permalink_from_title("Survey #9 (2021)"),
+            "survey-9-(2021)"
+        );
+        assert_eq!(
+            get_permalink_from_title("Title: With Colon"),
+            "title-with-colon"
         );
     }
 
