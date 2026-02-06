@@ -59,9 +59,11 @@ impl Plugin for HomepagePlugin {
         for post in &site.posts {
             // Format date for human readable display (YYYY/MM/DD)
             let date_human_readable = post.frontmatter.date.replace('-', "/");
+            // Build full post URL
+            let post_url = format!("{}/{}/", host, post.permalink);
 
             let post_item = post_item_template
-                .replace(POST_ITEM_LINK_PLACEHOLDER, &post.permalink)
+                .replace(POST_ITEM_LINK_PLACEHOLDER, &post_url)
                 .replace(POST_ITEM_DATE_TIMESTAMP_PLACEHOLDER, &post.frontmatter.date)
                 .replace(POST_ITEM_DATE_READABLE_PLACEHOLDER, &date_human_readable)
                 .replace(POST_ITEM_TITLE_PLACEHOLDER, &post.frontmatter.title)
