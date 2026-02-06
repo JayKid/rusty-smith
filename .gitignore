@@ -24,3 +24,7 @@ build
 
 # Environment variables
 .env
+
+# Personal assets (use your own logo and styles)
+public/img/logo.png
+public/css/styles.css
